@@ -1,17 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Calculator extends JFrame implements ActionListener{
     private JTextField displayField;
-    private JButton[][] buttons;
-    private String[] buttonLabels = {
-            "1", "2", "3", "+",
-            "4", "5", "6", "-",
-            "7", "8", "9", "/",
-            "C", "0", "x", "=",
-            "CE", "Backspace", ".", ""
-    };
+    private String currentOperator;
+    private double firstOperand;
+
 
     public Calculator() {
         setTitle("Calculator");
@@ -27,18 +23,40 @@ public class Calculator extends JFrame implements ActionListener{
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(5, 4));
-        buttons = new JButton[5][4];
+        String[] buttonLabels = {
+                "1", "2", "3", "+",
+                "4", "5", "6", "-",
+                "7", "8", "9", "/",
+                "C", "0", "x", "=",
+                "CE", "Backspace", ".", ""
+        };
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 4; j++) {
-                buttons[i][j] = new JButton(buttonLabels[i * 4 + j]);
-                buttons[i][j].addActionListener(this);
-                buttonPanel.add(buttons[i][j]);
-            }
+        for (String label : buttonLabels) {
+            JButton button = new JButton(label);
+            button.addActionListener(this);
+            buttonPanel.add(button);
         }
 
         add(buttonPanel, BorderLayout.CENTER);
         setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        if ("0123456789.".contains(command)) {
+            // 숫자 버튼 클릭 시 처리
+            if (displayField.getText().equals("0")) {
+                displayField.setText(command);
+            } else {
+                displayField.setText(displayField.getText() + command);
+            }
+        } else if ("+-x/".contains(command)) {
+            // 연산자 버튼 클릭 시 처리
+            firstOperand = Double.parseDouble(displayField.getText());
+            currentOperator = command.replace("x", "*");
+            displayField.setText("0");
+        }
     }
 
     public static void main(String[] args) {
