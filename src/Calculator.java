@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Calculator extends JFrame implements ActionListener{
+public class Calculator extends JFrame implements ActionListener {
     private JTextField displayField;
     private String currentOperator;
     private double firstOperand;
@@ -56,10 +56,37 @@ public class Calculator extends JFrame implements ActionListener{
             firstOperand = Double.parseDouble(displayField.getText());
             currentOperator = command.replace("x", "*");
             displayField.setText("0");
+        } else if ("=".equals(command)) {
+            // 결과 계산
+            double secondOperand = Double.parseDouble(displayField.getText());
+            double result = 0;
+
+            switch (currentOperator) {
+                case "+":
+                    result = firstOperand + secondOperand;
+                    break;
+                case "-":
+                    result = firstOperand - secondOperand;
+                    break;
+                case "x":
+                    result = firstOperand * secondOperand;
+                    break;
+                case "/":
+                    if (secondOperand != 0) {
+                        result = firstOperand / secondOperand;
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Cannot divide by zero.");
+                        return;
+                    }
+                    break;
+            }
+            displayField.setText(String.valueOf(result));
+            currentOperator = null;
         }
     }
 
     public static void main(String[] args) {
+
         new Calculator();
     }
 
